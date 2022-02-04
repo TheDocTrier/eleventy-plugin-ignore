@@ -30,7 +30,7 @@ const defaultOpts: Options = {
 };
 
 export = function (eleventyConfig: PartialEleventyConfig, opts = defaultOpts) {
-  eleventyConfig.on("eleventy.before", () => {
+  function updateIgnores() {
     for (const path of fg.sync(
       opts.templateFormats.map((fmt) =>
         join(eleventyConfig.dir.input, `**/*.${fmt}`)
@@ -43,5 +43,8 @@ export = function (eleventyConfig: PartialEleventyConfig, opts = defaultOpts) {
         eleventyConfig.ignores.delete(path);
       }
     }
-  });
+  }
+  // had to refactor and use this hack so ignores are updated on the first pass
+  updateIgnores();
+  eleventyConfig.on("eleventy.before", updateIgnores);
 };

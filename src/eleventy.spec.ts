@@ -37,7 +37,6 @@ test("production frontmatter", () => {
   jest.resetModules();
   const nPlugin: typeof plugin = require("./eleventy");
   nPlugin(eleventyConfig);
-  eleventyConfig.emit("eleventy.before");
   expect(getIgnoresSet()).toEqual(
     new Set(["example/t-ignore.md", "example/t-draft.md"])
   );
@@ -46,6 +45,7 @@ test("production frontmatter", () => {
 
 test("ignore frontmatter", () => {
   plugin(eleventyConfig);
-  eleventyConfig.emit("eleventy.before");
   expect(getIgnoresSet()).toEqual(new Set(["example/t-ignore.md"]));
 });
+
+// TODO add a test for before build event (may eventually just run a real eleventy build)
