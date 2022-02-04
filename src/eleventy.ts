@@ -11,16 +11,24 @@ interface Front {
 }
 
 interface Options<Data = Front> {
+  /** Function to call on frontmatter data, if it returns true, ignore */
   ignore(data: Data): boolean;
+  /** Template formats to search for inside input directory */
+  templateFormats: string[];
 }
 
 const defaultOpts: Options = {
   ignore: (data) => Boolean(data.ignore || (data.draft && isProd)),
+  // poor solution until plugins are able to get the templates
+  templateFormats: ["html", "liquid", "md", "njk"],
 };
 
-export = function (eleventyConfig: any, opts = defaultOpts) {
+export = function (
+  eleventyConfig: { dir: { input: string }; ignores: Set<string> },
+  opts = defaultOpts
+) {
   for (const path of fg.sync(
-    (eleventyConfig.templateFormats as string[]).map((fmt) =>
+    opts.templateFormats.map((fmt) =>
       join(eleventyConfig.dir.input, `**/*.${fmt}`)
     )
   )) {

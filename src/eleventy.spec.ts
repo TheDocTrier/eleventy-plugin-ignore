@@ -13,13 +13,10 @@ beforeAll(async () => {
 afterAll(() => rm("example", { recursive: true }));
 
 let eleventyConfig: {
-  templateFormats: string[];
   dir: {
     input: string;
   };
-  ignores: {
-    add: jest.Mock<unknown, [string]>;
-  };
+  ignores: Set<string> & { add: jest.Mock<unknown, [string]> };
 };
 
 const getIgnoresSet = () =>
@@ -27,13 +24,10 @@ const getIgnoresSet = () =>
 
 beforeEach(() => {
   eleventyConfig = {
-    templateFormats: ["md"],
     dir: {
       input: "example",
     },
-    ignores: {
-      add: jest.fn(),
-    },
+    ignores: Object.assign(new Set<string>(), { add: jest.fn() }),
   };
 });
 
