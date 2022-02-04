@@ -1,5 +1,6 @@
 import plugin = require("./eleventy");
 import { mkdir, writeFile, rm } from "fs/promises";
+import { EventEmitter } from "stream";
 
 beforeAll(async () => {
   await mkdir("example");
@@ -12,7 +13,7 @@ beforeAll(async () => {
 
 afterAll(() => rm("example", { recursive: true }));
 
-let eleventyConfig: {
+let eleventyConfig: EventEmitter & {
   dir: {
     input: string;
   };
@@ -23,12 +24,12 @@ const getIgnoresSet = () =>
   new Set(eleventyConfig.ignores.add.mock.calls.map((c) => c[0]));
 
 beforeEach(() => {
-  eleventyConfig = {
+  eleventyConfig = Object.assign(new EventEmitter(), {
     dir: {
       input: "example",
     },
     ignores: Object.assign(new Set<string>(), { add: jest.fn() }),
-  };
+  });
 });
 
 test("production frontmatter", () => {
@@ -36,6 +37,7 @@ test("production frontmatter", () => {
   jest.resetModules();
   const nPlugin: typeof plugin = require("./eleventy");
   nPlugin(eleventyConfig);
+  eleventyConfig.emit("eleventy.before");
   expect(getIgnoresSet()).toEqual(
     new Set(["example/t-ignore.md", "example/t-draft.md"])
   );
@@ -44,5 +46,6 @@ test("production frontmatter", () => {
 
 test("ignore frontmatter", () => {
   plugin(eleventyConfig);
+  eleventyConfig.emit("eleventy.before");
   expect(getIgnoresSet()).toEqual(new Set(["example/t-ignore.md"]));
 });

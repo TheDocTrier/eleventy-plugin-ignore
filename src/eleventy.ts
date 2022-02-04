@@ -2,8 +2,14 @@ import { join } from "path";
 import { readFileSync } from "fs";
 import fg = require("fast-glob");
 import matter = require("gray-matter");
+import { EventEmitter } from "stream";
 
 const isProd = process.env["NODE_ENV"] === "production";
+
+type PartialEleventyConfig = EventEmitter & {
+  dir: { input: string };
+  ignores: Set<string>;
+};
 
 interface Front {
   ignore?: boolean;
@@ -23,18 +29,19 @@ const defaultOpts: Options = {
   templateFormats: ["html", "liquid", "md", "njk"],
 };
 
-export = function (
-  eleventyConfig: { dir: { input: string }; ignores: Set<string> },
-  opts = defaultOpts
-) {
-  for (const path of fg.sync(
-    opts.templateFormats.map((fmt) =>
-      join(eleventyConfig.dir.input, `**/*.${fmt}`)
-    )
-  )) {
-    const data = matter(readFileSync(path, "utf-8")).data;
-    if (opts.ignore(data)) {
-      eleventyConfig.ignores.add(path);
+export = function (eleventyConfig: PartialEleventyConfig, opts = defaultOpts) {
+  eleventyConfig.on("eleventy.before", () => {
+    for (const path of fg.sync(
+      opts.templateFormats.map((fmt) =>
+        join(eleventyConfig.dir.input, `**/*.${fmt}`)
+      )
+    )) {
+      const data = matter(readFileSync(path, "utf-8")).data;
+      if (opts.ignore(data)) {
+        eleventyConfig.ignores.add(path);
+      } else {
+        eleventyConfig.ignores.delete(path);
+      }
     }
-  }
+  });
 };
