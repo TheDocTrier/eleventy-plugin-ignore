@@ -1,3 +1,9 @@
+# compiled js
+lib
+
+# vscode
+.vscode
+
 # Logs
 logs
 *.log
