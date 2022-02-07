@@ -1,6 +1,6 @@
 {
   "name": "eleventy-plugin-ignore",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "Ignore files based on their front matter.",
   "main": "lib/eleventy.js",
   "types": "lib/eleventy.d.ts",
