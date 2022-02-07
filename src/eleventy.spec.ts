@@ -32,7 +32,7 @@ beforeEach(() => {
   });
 });
 
-test("production frontmatter", () => {
+test("production front matter", () => {
   process.env["NODE_ENV"] = "production";
   jest.resetModules();
   const nPlugin: typeof plugin = require("./eleventy");
@@ -43,7 +43,7 @@ test("production frontmatter", () => {
   process.env["NODE_ENV"] = "test";
 });
 
-test("ignore frontmatter", () => {
+test("ignore front matter", () => {
   plugin(eleventyConfig);
   expect(getIgnoresSet()).toEqual(new Set(["example/t-ignore.md"]));
 });

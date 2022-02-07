@@ -17,7 +17,7 @@ interface Front {
 }
 
 interface Options<Data = Front> {
-  /** Function to call on frontmatter data, if it returns true, ignore */
+  /** Function to call on front matter data, if it returns true, ignore */
   ignore(data: Data): boolean;
   /** Template formats to search for inside input directory */
   templateFormats: string[];
