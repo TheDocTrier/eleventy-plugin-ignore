@@ -26,5 +26,8 @@ eleventyConfig.addPlugin(
 
 ## Limitations
 
-When using `eleventy --serve`, any change to the front matter of a template will require a second rebuild for the template to be ignored in the browser.
+This plugin does not delete ignored templates from the output directory.
+It is recommended that you clear your output direct before each build.
+
+When using `eleventy --serve`, any change to the front matter of a template will require a second rebuild for the template to be ignored.
 This is because eleventy currently processes ignores before running the `beforeBuild` callbacks (see [this issue](https://github.com/11ty/eleventy/issues/2207)).
